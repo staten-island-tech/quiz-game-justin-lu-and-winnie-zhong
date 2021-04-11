@@ -118,7 +118,32 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"js/index.js":[function(require,module,exports) {
-console.log(connected);
+var correctAnswers = ["A", "A", "B", "B", "D", "A", "D", "C", "C", "A"];
+var form = document.querySelector(".quiz");
+var result = document.querySelector(".result");
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  var score = 0;
+  var userAnswers = [form.q1.value, form.q2.value, form.q3.value, form.q4.value, form.q5.value, form.q6.value, form.q7.value, form.q8.value, form.q9.value, form.q10.value]; //check the answers
+
+  userAnswers.forEach(function (answer, index) {
+    if (answer === correctAnswers[index]) {
+      score += 10;
+    }
+  });
+  scrollTo(0, 0);
+  result.classList.remove("d-none");
+  var output = 0;
+  var timer = setInterval(function () {
+    result.querySelector("span").textContent = "".concat(output, "%");
+
+    if (output === score) {
+      clearInterval(timer);
+    } else {
+      output++;
+    }
+  }, 10);
+});
 },{}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -147,7 +172,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59810" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50413" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -178,8 +203,9 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
         assetsToAccept.forEach(function (v) {
           hmrAcceptRun(v[0], v[1]);
         });
-      } else {
-        window.location.reload();
+      } else if (location.reload) {
+        // `location` global exists in a web worker context but lacks `.reload()` function.
+        location.reload();
       }
     }
 
